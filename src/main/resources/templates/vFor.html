@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- favicon 설정 -->
+<link rel="shortcut icon" href="http://192.168.10.68/images/favicon.ico"/>
+<title>Insert title here</title>
+<!--  bootstrap CDN -->
+<link rel="stylesheet" type="text/css"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+ 
+<style type="text/css">
+ 
+</style>
+
+<!-- jquery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+<!-- Vue CDN -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+<script type="text/javascript">
+$(function(){
+});
+</script>
+</head>
+<body>
+<div id="app">
+<h3>v-for 반복</h3>
+<ul>
+<li v-for="name in names">{{ name }}</li>
+</ul>
+<ul>
+<li v-for="(name,ind) in names">{{ind+1}} - {{ name }}</li>
+</ul>
+
+<input type="text" v-for="name in names" :value="name"/>
+<br/>
+<strong>객체배열</strong>
+<table class="table table-hover">
+<thead>
+<tr>
+<th>번호</th>
+<th>이름</th>
+<th>주소</th>
+</tr>
+</thead>
+<tbody>
+<tr v-for="(member,ind) in members">
+<td>{{ind+1}}</td>
+<td><input type="text" v-bind:value="member.name"/></td>
+<td><input type="text" :value="member.addr"/></td>
+</tr>
+</tbody>
+</table>
+
+<select>
+	<option v-for="dept in depts" :key="dept.deptno" :value="dept.deptno">{{dept.dname}}</option>
+</select>
+</div>
+
+<script>
+Vue.createApp({
+    data(){
+        return { names:["일장훈","이장훈","삼장훈","사장훈","오장훈"],
+        		/*객체 배열*/
+        		members:[
+        			{name:"이장훈",addr:"서울시"},
+        			{name:"주현석",addr:"인천시"},
+        			{name:"강태일",addr:"제주시"},
+        			{name:"유연수",addr:"수원시"},
+        		],
+        		depts:[
+        			{deptno:10, dname:"개발부"},
+        			{deptno:20, dname:"운영"},
+        			{deptno:30, dname:"유지보수"},
+        			{deptno:40, dname:"QA"}
+        		]
+        	
+        }
+    }
+}).mount("#app");
+</script>
+</body>
+</html>

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- favicon 설정 -->
+<link rel="shortcut icon" href="http://192.168.10.68/images/favicon.ico"/>
+<title>Insert title here</title>
+<!--  bootstrap CDN -->
+<link rel="stylesheet" type="text/css"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+ 
+<style type="text/css">
+ 
+</style>
+
+<!-- jquery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+<!-- Vue CDN -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+
+<script type="text/javascript">
+$(function(){
+});
+</script>
+</head>
+<body>
+<div id="app">
+<h2>양방향 바인딩 v-model directive 사용 예제</h2>
+<input type="text" v-model="message" placeholder="아무값이나 입력해주세요">
+<div>입력한 내용 {{ message }}</div>
+</div>
+
+<div id="app2" style="color:#0000FF">
+<h2>양방향 바인딩 v-model directive 사용 예제2</h2>
+<input type="text" v-model="message" placeholder="아무값이나 입력해주세요">
+<div>입력한 내용 {{ message }}</div>
+<div>{{ msg }}</div>
+</div>
+
+<div id="app3">
+<select name="fruit" v-model="selectedFruit">
+<option disabled="disabled" value="none">--선택하세요--</option>
+<option value="수박">수박</option>
+<option value="참외">참외</option>
+<option value="사과">사과</option>
+<option value="포도">포도</option>
+</select>
+<div> 선택한 과일 : {{ selectedFruit }}</div>
+</div>
+
+<script>
+Vue.createApp({
+    data(){
+        return { message:"" }
+    }
+}).mount("#app");
+
+Vue.createApp({
+    data(){
+        return { message:"",msg:"안녕하세요?" }
+    }
+}).mount("#app2");
+
+Vue.createApp({
+    data(){
+        return { selectedFruit:"포도" }
+    }
+}).mount("#app3");
+
+</script>
+</body>
+</html>

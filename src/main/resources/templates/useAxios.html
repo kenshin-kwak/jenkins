@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+<meta charset="UTF-8">
+<!-- favicon 설정 -->
+<link rel="shortcut icon" href="http://192.168.10.68/images/favicon.ico"/>
+<title>Insert title here</title>
+<!--  bootstrap CDN -->
+<link rel="stylesheet" type="text/css"
+href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.5/dist/css/bootstrap.min.css">
+ 
+<style type="text/css">
+ 
+</style>
+
+<!-- jquery CDN -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.2.4/jquery.min.js"></script>
+
+<!-- Vue CDN -->
+<script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+<!-- Axios CDN -->
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
+<script type="text/javascript">
+$(function(){
+});
+</script>
+</head>
+<body>
+<div id="app">
+<h2>회원등록</h2>
+<label>아이디</label><input type="text" v-model="newMember.id"/><br/>
+<label>이름</label><input type="text" v-model="newMember.name"/><br/>
+<label>나이</label><input type="text" v-model="newMember.age"/><br/>
+<input type="button" value="추가" @Click="addMember" class="btn btn-success btn-sm"/>
+<div v-html="msg"></div>
+
+<div>
+<input type="button" value="전체회원검색" @Click="searchMember" class="btn btn-info btn-sm"/>
+<table class="table table-hover">
+<thead>
+<tr>
+	<th>번호</th>
+	<th>아이디</th>
+	<th>이름</th>
+	<th>나이</th>
+	<th>작업</th>
+</tr>
+</thead>
+<tbody>
+<tr v-if="members.length == 0">
+<td colspan="5">회원 정보가 존재하지 않습니다.</td>
+</tr>
+<tr v-for="(member, ind ) in members" :key="member.id">
+	<td>{{ind+1}}</td>
+	<td>{{member.id}}</td>
+	<td>{{member.name}}</td>
+	<td>{{member.age}}</td>
+	<td>
+	<input type="button" value="삭제" @Click="removeMember(member.id)" class="btn btn-danger btn-sm">
+	<input type="button" value="변경" @Click="editMember(member)" class="btn btn-primary btn-sm">
+	</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div v-if="editData.id"><!-- JSONObject의 id 속성에 값이 있다면 true, 없다면 false -->
+<h2>회원수정</h2>
+<!-- 깊은 복사를 하여 입력된 객체와 수정할 객체가 같은 값을 가지지만 다른 주소를 사용
+ 복사된 객체를 수정하더라도 원본객체에 영향을 주지않는다. -->
+<label>아이디</label><input type="text" v-model="editData.id"/><br/>
+<label>이름</label><input type="text" v-model="editData.name"/><br/>
+<label>나이</label><input type="text" v-model="editData.age"/><br/>
+<input type="button" value="변경" @Click="modifyMember" class="btn btn-success btn-sm"/>
+</div>
+
+</div>
+
+<script>
+var preUrl="/app1";
+Vue.createApp({
+    data(){
+        return { 
+        	newMember:{ id:"", name:"", age:0 }, 
+        	msg:"",
+        	members:[],
+        	editData:{id:"", name:"", age:0 }
+        	}
+    },
+    methods:{
+    	addMember(){
+    		//back-end ( RestController )로 전달
+    		//axios.post("/url",값).then(res=>{}).catch(err=>{});
+    		axios.post(`${preUrl}/member`, this.newMember)
+    		.then( res =>{
+    			this.msg=`${this.newMember.id}로 추가 결과 ${ res.data.message }.`;
+    			this.newMember={id:"",name:"",age:0};
+    		})
+    		.catch(err => {
+    			this.msg="회원정보 추가 성공";
+    			console.log(`추가: ${err}` );
+    			
+    		});
+    	},
+    	searchMember(){
+    	//axios.get("/url",값).then(res=>{}).catch(err=>{});
+    	axios.get(`${preUrl}/members`)
+    	.then(res=>{
+    		this.members=res.data;//JSONArray
+    		this.msg="<marquee>회원정보 검색 성공</marquee>";
+    		
+    	})
+    	.catch(err=>{
+   			this.msg="회원정보 검색 중 문제 발생";
+   			console.log(`추가: ${err}` );
+    	});
+    	
+    	},
+    	removeMember( id ){
+    		//axios.delete("/url",값).then(res=>{}).catch(err=>{});
+    		axios.delete(`${preUrl}/members/${id}`)
+    		.then(res=>{
+	   			this.msg="회원정보가 성공적으로 삭제되었습니다.";
+	   			this.searchMember();
+    		})
+    		.catch(err=>{
+	   			this.msg="회원정보 삭제 중 문제 발생";
+	   			console.log(`추가: ${err}` );
+    		});
+    	},
+    	editMember(member){
+    		this.editData={...member };    		
+    	},
+    	modifyMember(){
+    	//axios.put("/url",값).then(res=>{}).catch(err=>{});
+    		axios.put(`${preUrl}/members/${this.editData.id}`,this.editData)
+    		.then(res=>{ 
+   				this.msg=res.data.message;
+   				this.searchMember();//갱신
+   				this.editData={id:"", name:"", age:0 };//수정 폼이 사라진다.
+    		})
+    		.catch(err=>{
+	   			this.msg="회원정보 변경 중 문제 발생";
+	   			console.log(`추가: ${err}` );
+    		});
+    	}
+    	
+    }
+}).mount("#app");
+</script>
+</body>
+</html>
